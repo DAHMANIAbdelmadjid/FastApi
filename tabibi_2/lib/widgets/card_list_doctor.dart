@@ -13,14 +13,18 @@ class CardListDoctor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p12),
-        child: Row(
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, '/select-date');
+      },
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppPadding.p12),
+          child: Row(
           children: [
             CircleAvatar(
               radius: 30,
@@ -56,15 +60,16 @@ class CardListDoctor extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.primaryColor,
-                size: 20,
-              ),
-            ),
+IconButton(
+  icon: Icon(Icons.arrow_forward_ios),
+  color: AppColors.primaryColor,
+  onPressed: () {         
+    Navigator.pushNamed(context, '/detailes');
+  },
+  // size: 20,
+),
           ],
+          ),
         ),
       ),
     );

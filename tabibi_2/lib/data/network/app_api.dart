@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:tabibi_2/data/response/response.dart';
+import 'package:tabibi_2/data/response/appointment_response.dart';
+import 'package:tabibi_2/data/response/api_response.dart';
+import 'package:tabibi_2/data/network/requests.dart';
 
 part 'app_api.g.dart';
 
@@ -35,4 +38,28 @@ abstract class AppApi {
   @GET("/api/doctors/search")
   Future<DoctorsResponse> searchDoctors(
       @Query("query") String query, @Query("city") String city);
+
+  @POST("/api/appointment")
+  Future<ApiResponse<AppointmentResponse>> createAppointment(
+    @Body() AppointmentRequest request,
+  );
+
+  @GET("/api/appointment/{workScheduleId}")
+  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(
+    @Path() String workScheduleId,
+  );
+
+  @PATCH("/api/appointment/confirm/{id}")
+  Future<ApiResponse<void>> confirmAppointment(@Path() String id);
+
+  @PATCH("/api/appointment/cancel/{id}")
+  Future<ApiResponse<void>> cancelAppointment(@Path() String id);
+
+  @GET("/api/work-schedule")
+  Future<ApiResponse<List<WorkScheduleResponse>>> getWorkSchedules();
+
+  @POST("/api/work-schedule")
+  Future<ApiResponse<WorkScheduleResponse>> createWorkSchedule(
+    @Body() WorkScheduleRequest request,
+  );
 }
