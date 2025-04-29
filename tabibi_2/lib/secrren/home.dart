@@ -14,44 +14,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 1;
-
+  int selectedIndex = 0;
+  final List<Widget> _screens = [
+    const JoneScreen(),
+    const SearchDoctor(),
+    const TelegramAndWhatsapp(),
+    const DoctorProfile(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: AppColors.primaryColor,
-        items: const [
-          Icon(
-            Icons.home,
-            color: AppColors.primaryColor,
-          ),
-          Icon(
-            Icons.access_time,
-            color: AppColors.primaryColor,
-          ),
-          Icon(
-            Icons.message_outlined,
-            color: AppColors.primaryColor,
-          ),
-          Icon(
-            Icons.person,
-            color: AppColors.primaryColor,
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-      ),
-      body: selectedIndex == 0
-          ? const JoneScreen()
-          : selectedIndex == 1
-              ? const SearchDoctor()
-              : selectedIndex == 2
-                  ? const TelegramAndWhatsapp()
-                  : const DoctorProfile(),
-    );
+        bottomNavigationBar: NavigationBar(
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.access_time),
+              label: 'Time',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.message_outlined),
+              label: 'Message',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
+        ),
+        body: _screens[selectedIndex]);
   }
 }

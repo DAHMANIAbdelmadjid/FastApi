@@ -5,12 +5,12 @@ import 'package:tabibi_2/app/core/styles.dart';
 import 'package:tabibi_2/generated/l10n.dart';
 import 'package:tabibi_2/widgets/card_list_doctor.dart';
 
-class ListDoctor extends StatelessWidget {
-  const ListDoctor({super.key});
+class AllDoctors extends StatelessWidget {
+  const AllDoctors({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var listDoctor = [
+    var AllDoctors = [
       "Ahmed",
       "Mohamed",
       "Ali",
@@ -68,11 +68,11 @@ class ListDoctor extends StatelessWidget {
             const SizedBox(height: AppSize.s16),
             Expanded(
               child: ListView.builder(
-                itemCount: listDoctor.length,
+                itemCount: AllDoctors.length,
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(bottom: AppPadding.p8),
                   child: CardListDoctor(
-                    doctorName: listDoctor[index],
+                    doctorName: AllDoctors[index],
                   ),
                 ),
               ),
