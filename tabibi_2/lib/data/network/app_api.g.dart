@@ -51,17 +51,11 @@ class _AppApi implements AppApi {
     String fullName,
     String email,
     String password,
-    String phoneNumber,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = {
-      'fullName': fullName,
-      'email': email,
-      'password': password,
-      'phoneNumber': phoneNumber,
-    };
+    final _data = {'fullName': fullName, 'email': email, 'password': password};
     final _options = _setStreamType<LoginResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

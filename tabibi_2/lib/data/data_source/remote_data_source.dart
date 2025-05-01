@@ -7,7 +7,7 @@ import 'package:tabibi_2/data/response/appointment_response.dart';
 abstract class RemoteDataSource {
   Future<LoginResponse> login(LoginRequest loginRequest);
   Future<LoginResponse> signup(
-      String fullName, String email, String password, String phoneNumber);
+      String fullName, String email, String password);
   Future<CitiesResponse> getCities();
   Future<CitiesResponse> searchCities(String query);
   Future<DoctorsResponse> getDoctors();
@@ -35,9 +35,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<LoginResponse> signup(String fullName, String email, String password,
-      String phoneNumber) async {
-    return await _appApi.signup(fullName, email, password, phoneNumber);
+  Future<LoginResponse> signup(String fullName, String email, String password) async {
+    return await _appApi.signup(fullName, email, password);
   }
 
   @override

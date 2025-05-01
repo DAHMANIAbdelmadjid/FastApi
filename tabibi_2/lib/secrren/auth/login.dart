@@ -1,11 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
-import 'package:tabibi_2/data/data_source/remote_data_source.dart';
-import 'package:tabibi_2/data/network/app_api.dart';
-import 'package:tabibi_2/data/network/requests.dart';
+import 'package:tabibi_2/app/providers/auth_provider.dart';
 import 'package:tabibi_2/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,8 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
+  bool _rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +66,38 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: AppSize.s16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            _rememberMe = value ?? false;
+                          });
+                          context.read<AuthProvider>().setRememberMe(_rememberMe);
+                        },
+                      ),
+                      const Text('Remember Me'),
+                    ],
+                  ),
                   const SizedBox(height: AppSize.s20),
+                  Consumer<AuthProvider>(
+                    builder: (context, auth, _) {
+                      if (auth.error != null) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: AppSize.s16),
+                          child: Text(
+                            auth.error!,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: FontSize.s14,
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                   ElevatedButton(
                     onPressed: _handleLogin,
                     child: const Text("Sign In"),
@@ -124,79 +152,32 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleLogin() async {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+      final authProvider = context.read<AuthProvider>();
+      final success = await authProvider.login(
+        _emailController.text,
+        _passwordController.text,
       );
 
-      try {
-        // Create Dio instance
-        final dio = Dio();
-        // Create API instance
-        final appApi = AppApi(dio);
-        // Create remote data source
-        final remoteDataSource = RemoteDataSourceImpl(appApi);
-        // Create login request
-        final loginRequest =
-            LoginRequest(_emailController.text, _passwordController.text);
-
-        // Call login API
-        final response = await remoteDataSource.login(loginRequest);
-
-        // Close loading indicator
-        Navigator.pop(context);
-
-        if (response.succeeded == true) {
-          // Save token to secure storage or shared preferences
-          // For now, just print it
-          print('Login successful: ${response.token}');
-
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text("Login successful"),
-              backgroundColor: Colors.green,
-            ),
-          );
-
-          // Navigate to home screen
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? "Login failed"),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        // Close loading indicator
-        Navigator.pop(context);
-
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login failed: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+      if (success && mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _rememberMe = context.read<AuthProvider>().rememberMe;
+    });
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _nameController.dispose();
-    _phoneNumberController.dispose();
     super.dispose();
   }
 }

@@ -72,18 +72,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: AppSize.s16),
-                  CustomTextField(
-                    text: "Phone Number",
-                    controller: _phoneNumberController,
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a valid phone number";
-                      }
-                      return null;
-                    },
-                  ),
+                  // const SizedBox(height: AppSize.s16),
+                  // CustomTextField(
+                  //   text: "Phone Number",
+                  //   controller: _phoneNumberController,
+                  //   keyboardType: TextInputType.phone,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return "Please enter a valid phone number";
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   const SizedBox(height: AppSize.s16),
                   CustomTextField(
                     text: "Email",
@@ -197,19 +197,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       try {
-        // Create Dio instance
+        // Create Dio instance with logging
         final dio = Dio();
+        dio.interceptors.add(LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+        ));
+        
         // Create API instance
         final appApi = AppApi(dio);
         // Create remote data source
         final remoteDataSource = RemoteDataSourceImpl(appApi);
 
-        // Call signup API
+        print('Attempting signup with:');
+        print('Name: ${_nameController.text}');
+        print('Email: ${_emailController.text}');
+        print('Password: ${_passwordController.text}');
+
+        // Call signup API without phone number
         final response = await remoteDataSource.signup(
             _nameController.text,
             _emailController.text,
-            _passwordController.text,
-            _phoneNumberController.text);
+            _passwordController.text);
 
         // Close loading indicator
         Navigator.pop(context);
@@ -254,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
-    _phoneNumberController.dispose();
+    // _phoneNumberController.dispose();
     super.dispose();
   }
 }

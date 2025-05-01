@@ -23,7 +23,7 @@ abstract class AppApi {
     @Field("fullName") String fullName,
     @Field("email") String email,
     @Field("password") String password,
-    @Field("phoneNumber") String phoneNumber,
+    // @Field("phoneNumber") String phoneNumber,
   );
 
   @GET("/api/cities")
