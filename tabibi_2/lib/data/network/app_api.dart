@@ -20,7 +20,7 @@ abstract class AppApi {
 
   @POST("/api/authenfication/signup")
   Future<LoginResponse> signup(
-    @Field("fullName") String fullName,
+    @Field("userName") String fullName,
     @Field("email") String email,
     @Field("password") String password,
     // @Field("phoneNumber") String phoneNumber,

@@ -55,7 +55,7 @@ class _AppApi implements AppApi {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = {'fullName': fullName, 'email': email, 'password': password};
+    final _data = {'userName': fullName, 'email': email, 'password': password};
     final _options = _setStreamType<LoginResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
