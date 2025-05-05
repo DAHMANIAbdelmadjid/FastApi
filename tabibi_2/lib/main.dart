@@ -5,14 +5,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tabibi_2/app/providers/auth_provider.dart';
+import 'package:tabibi_2/app/providers/patient_provider.dart';
 import 'package:tabibi_2/data/network/auth_interceptor.dart';
 import 'package:tabibi_2/app/core/app_theme.dart';
 import 'package:tabibi_2/app/providers/appointment_provider.dart';
 import 'package:tabibi_2/data/data_source/remote_data_source.dart';
 import 'package:tabibi_2/data/network/app_api.dart';
+import 'package:tabibi_2/data/repository/repository_impl.dart';
 import 'package:tabibi_2/generated/l10n.dart';
 import 'package:tabibi_2/secrren/appointment.dart';
 import 'package:tabibi_2/secrren/auth/login.dart';
+import 'package:tabibi_2/secrren/auth/patient_registration.dart';
 import 'package:tabibi_2/secrren/auth/singup.dart';
 import 'package:tabibi_2/secrren/dar/detailes.dart';
 import 'package:tabibi_2/secrren/dar/payment%20.dart';
@@ -53,9 +56,13 @@ class MyApp extends StatelessWidget {
     // Initialize API and data source
     final appApi = AppApi(dio);
     final remoteDataSource = RemoteDataSourceImpl(appApi);
+    final repository = RepositoryImpl(remoteDataSource);
 
     // Initialize providers
-    final authProvider = AuthProvider(remoteDataSource, prefs)..init();
+    final authProvider = AuthProvider(remoteDataSource, prefs);
+
+    // Initialize auth state
+    authProvider.init();
 
     return MultiProvider(
       providers: [
@@ -65,6 +72,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AppointmentProvider(remoteDataSource),
         ),
+        ChangeNotifierProvider(
+          create: (_) => PatientProvider(repository),
+        ),
+ 
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -85,23 +96,32 @@ class MyApp extends StatelessWidget {
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            return auth.isAuthenticated ? const HomeScreen():LoginScreen();
+            return auth.isAuthenticated ? const HomeScreen() : LoginScreen();
           },
         ),
         routes: {
           '/signUp': (context) => const SignUpScreen(),
+          '/patient-registration': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+            return PatientRegistrationScreen(
+              userId: args['userId']!,
+              email: args['email']!,
+              fullName: args['fullName']!,
+            );
+          },
           '/home': (context) => const HomeScreen(),
-          '/select-date': (context) =>  SelectDateAndTime(),
+          '/select-date': (context) => SelectDateAndTime(),
           '/doctor-profile': (context) => const DoctorProfile(),
           '/notification': (context) => const NotificationScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/appointment': (context) => const AppointmentScreen(),
           '/telegram-and-whatsapp': (context) => const TelegramAndWhatsapp(),
           '/all-doctors': (context) => const AllDoctors(),
-          '/select-date-and-time': (context) =>  SelectDateAndTime(),
+          '/select-date-and-time': (context) => SelectDateAndTime(),
           "/detailes": (context) => const Detailes(),
           "/payment": (context) => const Payment(),
-          },
+          
+        },
       ),
     );
   }

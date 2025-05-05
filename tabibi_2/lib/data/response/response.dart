@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tabibi_2/domain/models/city.dart';
 import 'package:tabibi_2/domain/models/doctor.dart';
 
 part 'response.g.dart';
@@ -15,29 +14,9 @@ class LoginResponse {
   @JsonKey(name: 'error')
   String? error;
   @JsonKey(name: 'data')
-  String? token;
+  String? data;
 
   LoginResponse({
-    this.statusCode,
-    this.succeeded,
-    this.message,
-    this.error,
-    this.token,
-  });
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
-}
-
-class CitiesResponse {
-  int? statusCode;
-  bool? succeeded;
-  String? message;
-  String? error;
-  List<CityResponse>? data;
-
-  CitiesResponse({
     this.statusCode,
     this.succeeded,
     this.message,
@@ -45,53 +24,32 @@ class CitiesResponse {
     this.data,
   });
 
-  factory CitiesResponse.fromJson(Map<String, dynamic> json) => CitiesResponse(
-        statusCode: json["statusCode"],
-        succeeded: json["succeeded"],
-        message: json["message"],
-        error: json["error"],
-        data: json["data"] == null
-            ? []
-            : List<CityResponse>.from(
-                json["data"].map((x) => CityResponse.fromJson(x))),
-      );
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 
-  Map<String, dynamic> toJson() => {
-        "statusCode": statusCode,
-        "succeeded": succeeded,
-        "message": message,
-        "error": error,
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
-      };
+  String? get token => data;
 }
 
-class CityResponse {
-  int? id;
-  String? name;
+@JsonSerializable()
+class LoginData {
+  @JsonKey(name: 'token')
+  String? token;
+  @JsonKey(name: 'userId')
+  String? userId;
 
-  CityResponse({
-    this.id,
-    this.name,
+  LoginData({
+    this.token,
+    this.userId,
   });
 
-  factory CityResponse.fromJson(Map<String, dynamic> json) => CityResponse(
-        id: json["id"],
-        name: json["name"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-      };
-
-  toDomain() => City(
-        id: id ?? 0,
-        name: name ?? '',
-        country: '', // Provide a default or appropriate value for 'country'
-      );
+  factory LoginData.fromJson(Map<String, dynamic> json) =>
+      _$LoginDataFromJson(json);
+  Map<String, dynamic> toJson() => _$LoginDataToJson(this);
 }
+
+
+
 
 class DoctorsResponse {
   int? statusCode;
@@ -108,8 +66,7 @@ class DoctorsResponse {
     this.data,
   });
 
-  factory DoctorsResponse.fromJson(Map<String, dynamic> json) =>
-      DoctorsResponse(
+  factory DoctorsResponse.fromJson(Map<String, dynamic> json) => DoctorsResponse(
         statusCode: json["statusCode"],
         succeeded: json["succeeded"],
         message: json["message"],

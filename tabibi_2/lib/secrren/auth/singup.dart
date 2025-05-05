@@ -1,11 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
 import 'package:tabibi_2/app/core/styles.dart';
-import 'package:tabibi_2/data/data_source/remote_data_source.dart';
-import 'package:tabibi_2/data/network/app_api.dart';
+import 'package:tabibi_2/app/providers/auth_provider.dart';
 import 'package:tabibi_2/widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -20,7 +19,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
+
+  void _handleSignUp() async {
+    if (_formKey.currentState!.validate()) {
+      final authProvider = context.read<AuthProvider>();
+
+      await authProvider.signup(
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      if (authProvider.state.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.state.error!),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (authProvider.state.loginResponse?.succeeded == true && 
+                 authProvider.state.loginResponse?.data!= null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Sign up successful"),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate to patient registration with required data
+        Navigator.pushReplacementNamed(
+          context,
+          '/patient-registration',
+          arguments: {
+            'userId': authProvider.state.loginResponse!.data!,
+            'email': _emailController.text,
+            'fullName': _nameController.text,
+          },
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,18 +112,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-                  // const SizedBox(height: AppSize.s16),
-                  // CustomTextField(
-                  //   text: "Phone Number",
-                  //   controller: _phoneNumberController,
-                  //   keyboardType: TextInputType.phone,
-                  //   validator: (value) {
-                  //     if (value == null || value.isEmpty) {
-                  //       return "Please enter a valid phone number";
-                  //     }
-                  //     return null;
-                  //   },
-                  // ),
                   const SizedBox(height: AppSize.s16),
                   CustomTextField(
                     text: "Email",
@@ -109,26 +137,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: AppSize.s24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _handleSignUp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: AppPadding.p12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  Consumer<AuthProvider>(
+                    builder: (context, auth, _) {
+                      return ElevatedButton(
+                        onPressed: auth.state.isLoading ? null : _handleSignUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppPadding.p12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        "Sign Up",
-                        style: getBoldStyle(
-                          fontSize: FontSize.s16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                        child: auth.state.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                "Sign Up",
+                                style: getBoldStyle(
+                                  fontSize: FontSize.s16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      );
+                    },
                   ),
                   const SizedBox(height: AppSize.s20),
                   Row(
@@ -185,85 +217,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _handleSignUp() async {
-    if (_formKey.currentState!.validate()) {
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-
-      try {
-        // Create Dio instance with logging
-        final dio = Dio();
-        dio.interceptors.add(LogInterceptor(
-          requestBody: true,
-          responseBody: true,
-        ));
-        
-        // Create API instance
-        final appApi = AppApi(dio);
-        // Create remote data source
-        final remoteDataSource = RemoteDataSourceImpl(appApi);
-
-        print('Attempting signup with:');
-        print('Name: ${_nameController.text}');
-        print('Email: ${_emailController.text}');
-        print('Password: ${_passwordController.text}');
-
-        // Call signup API without phone number
-        final response = await remoteDataSource.signup(
-            _nameController.text,
-            _emailController.text,
-            _passwordController.text);
-
-        // Close loading indicator
-        Navigator.pop(context);
-
-        if (response.succeeded == true) {
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text("Sign up successful"),
-              backgroundColor: Colors.green,
-            ),
-          );
-
-          // Navigate to login screen
-          Navigator.pushReplacementNamed(context, '/login');
-        } else {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? "Sign up failed"),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        // Close loading indicator
-        Navigator.pop(context);
-
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sign up failed: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
-    // _phoneNumberController.dispose();
     super.dispose();
   }
 }

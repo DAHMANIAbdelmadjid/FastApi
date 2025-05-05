@@ -57,3 +57,32 @@ class WorkScheduleRequest {
     };
   }
 }
+
+class PatientRequest {
+  final String fullName;
+  final int gender;
+  final String birthDate;
+  final String phoneNumber;
+  final String email;
+  final String userId;
+
+  PatientRequest({
+    required this.fullName,
+    required this.gender,
+    required this.birthDate,
+    required this.phoneNumber,
+    required this.email,
+    required this.userId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'fullName': fullName,
+      'gender': gender,
+      'birthDate': birthDate,
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'userId': userId,
+    };
+  }
+}

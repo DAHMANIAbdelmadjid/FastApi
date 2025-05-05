@@ -1,37 +1,32 @@
 import 'package:tabibi_2/data/network/app_api.dart';
 import 'package:tabibi_2/data/network/requests.dart';
-import 'package:tabibi_2/data/response/response.dart';
 import 'package:tabibi_2/data/response/api_response.dart';
 import 'package:tabibi_2/data/response/appointment_response.dart';
+import 'package:tabibi_2/data/response/doctor_response.dart';
+import 'package:tabibi_2/data/response/patient_response.dart';
+import 'package:tabibi_2/data/response/response.dart';
 
 abstract class RemoteDataSource {
-  Future<LoginResponse> login(LoginRequest loginRequest);
-  Future<LoginResponse> signup(
-      String fullName, String email, String password);
-  Future<CitiesResponse> getCities();
-  Future<CitiesResponse> searchCities(String query);
+  Future<LoginResponse> login(String email, String password);
+  Future<LoginResponse> signup(String fullName, String email, String password);
+
   Future<DoctorsResponse> getDoctors();
   Future<DoctorsResponse> searchDoctors(String query, String city);
-  
-  // Appointment related methods
-  Future<ApiResponse<AppointmentResponse>> createAppointment(AppointmentRequest request);
+  Future<ApiResponse<String>> createAppointment(AppointmentRequest request);
   Future<ApiResponse<List<AppointmentResponse>>> getAppointments(String workScheduleId);
   Future<ApiResponse<void>> confirmAppointment(String id);
   Future<ApiResponse<void>> cancelAppointment(String id);
-  
-  // Work Schedule related methods
-  Future<ApiResponse<List<WorkScheduleResponse>>> getWorkSchedules();
-  Future<ApiResponse<WorkScheduleResponse>> createWorkSchedule(WorkScheduleRequest request);
+  Future<PatientResponse> createPatient(PatientRequest request);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
   final AppApi _appApi;
+
   RemoteDataSourceImpl(this._appApi);
 
   @override
-  Future<LoginResponse> login(LoginRequest loginRequest) async {
-    return await _appApi.login(
-        loginRequest.emailOrUserName, loginRequest.password);
+  Future<LoginResponse> login(String email, String password) async {
+    return await _appApi.login(email, password);
   }
 
   @override
@@ -39,15 +34,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return await _appApi.signup(fullName, email, password);
   }
 
-  @override
-  Future<CitiesResponse> getCities() async {
-    return await _appApi.getCities();
-  }
-
-  @override
-  Future<CitiesResponse> searchCities(String query) async {
-    return await _appApi.searchCities(query);
-  }
 
   @override
   Future<DoctorsResponse> getDoctors() async {
@@ -60,7 +46,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<ApiResponse<AppointmentResponse>> createAppointment(AppointmentRequest request) async {
+  Future<ApiResponse<String>> createAppointment(AppointmentRequest request) async {
     return await _appApi.createAppointment(request);
   }
 
@@ -79,13 +65,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return await _appApi.cancelAppointment(id);
   }
 
-  @override
-  Future<ApiResponse<List<WorkScheduleResponse>>> getWorkSchedules() async {
-    return await _appApi.getWorkSchedules();
-  }
+
 
   @override
-  Future<ApiResponse<WorkScheduleResponse>> createWorkSchedule(WorkScheduleRequest request) async {
-    return await _appApi.createWorkSchedule(request);
+  Future<PatientResponse> createPatient(PatientRequest request) async {
+    return await _appApi.createPatient(request);
   }
 }

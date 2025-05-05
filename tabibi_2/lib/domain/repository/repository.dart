@@ -1,20 +1,27 @@
-import 'dart:async';
-
-import 'package:dartz/dartz.dart';
-import 'package:tabibi_2/data/network/error.dart';
+import 'package:tabibi_2/data/network/requests.dart';
+import 'package:tabibi_2/data/response/api_response.dart';
+import 'package:tabibi_2/data/response/appointment_response.dart';
+import 'package:tabibi_2/data/response/doctor_response.dart';
+import 'package:tabibi_2/data/response/patient_response.dart';
 import 'package:tabibi_2/data/response/response.dart';
-import 'package:tabibi_2/domain/models/city.dart';
-import 'package:tabibi_2/domain/models/doctor.dart';
-import 'package:tabibi_2/domain/models/models.dart';
 
 abstract class Repository {
-  Future<Either<Error, Login>> login(LoginResponse loginResponse);
+  // Patient
+  Future<PatientResponse> createPatient(PatientRequest request);
+  
+  // Authentication
+  Future<LoginResponse> login(String email, String password);
+  Future<LoginResponse> signup(String fullName, String email, String password);
+  
 
-  // City methods
-  Future<Either<Error, List<City>>> getCities();
-  Future<Either<Error, List<City>>> searchCities(String query);
-
-  // Doctor methods
-  Future<Either<Error, List<Doctor>>> getDoctors();
-  Future<Either<Error, List<Doctor>>> searchDoctors(String query, String city);
+  Future<DoctorsResponse> getDoctors();
+  Future<DoctorsResponse> searchDoctors(String query, String city);
+  
+  // Appointments
+  Future<ApiResponse<String>> createAppointment(AppointmentRequest request);
+  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(String workScheduleId);
+  Future<ApiResponse<void>> confirmAppointment(String id);
+  Future<ApiResponse<void>> cancelAppointment(String id);
+  
+ 
 }

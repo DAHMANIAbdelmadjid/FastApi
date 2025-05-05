@@ -3,10 +3,16 @@ import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
 import 'package:tabibi_2/app/core/styles.dart';
 import 'package:tabibi_2/generated/l10n.dart';
+import 'package:tabibi_2/domain/models/patient.dart';
 
 class CardImageAndProFile extends StatelessWidget {
+  final String? imageUrl;
+  final Patient patient;
+
   const CardImageAndProFile({
     super.key,
+    this.imageUrl,
+    required this.patient,
   });
 
   @override
@@ -23,10 +29,10 @@ class CardImageAndProFile extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 25,
                         backgroundImage: NetworkImage(
-                          'https://via.placeholder.com/150',
+                          imageUrl ?? 'https://via.placeholder.com/150',
                         ),
                       ),
                       const SizedBox(width: AppSize.s10),
@@ -41,11 +47,31 @@ class CardImageAndProFile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'John Doe William',
+                            patient.fullName,
                             style: getSemiBoldStyle(
                               color: AppColors.textPrimaryColor,
                               fontSize: FontSize.s16,
                             ),
+                          ),
+                          const SizedBox(height: AppSize.s4),
+                          Row(
+                            children: [
+                              Icon(
+                                patient.gender == Gender.male
+                                    ? Icons.male
+                                    : Icons.female,
+                                size: 16,
+                                color: AppColors.textSecondaryColor,
+                              ),
+                              const SizedBox(width: AppSize.s4),
+                              Text(
+                                patient.phoneNumber,
+                                style: getRegularStyle(
+                                  color: AppColors.textSecondaryColor,
+                                  fontSize: FontSize.s12,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

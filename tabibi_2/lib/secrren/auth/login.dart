@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
+import 'package:tabibi_2/app/core/styles.dart';
 import 'package:tabibi_2/app/providers/auth_provider.dart';
 import 'package:tabibi_2/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -17,6 +18,43 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRememberMe();
+  }
+
+  void _initRememberMe() {
+    final auth = context.read<AuthProvider>();
+    _rememberMe = auth.rememberMe;
+  }
+
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      final auth = context.read<AuthProvider>();
+
+      auth.setRememberMe(_rememberMe);
+      await auth.login(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      if (auth.state.error != null) {
+        // Show error snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(auth.state.error!),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (auth.state.loginResponse?.succeeded == true) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,22 +71,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: AppSize.s20),
                   Center(
                     child: Text(
-                      "Sign In",
-                      style: const TextStyle(
+                      "Welcome Back",
+                      style: getBoldStyle(
                         fontSize: FontSize.s22,
-                        fontWeight: FontWeightManger.semiBold,
                         color: AppColors.primaryColor,
                       ),
                     ),
                   ),
                   const SizedBox(height: AppSize.s40),
+                  Text(
+                    "Login",
+                    style: getBoldStyle(
+                      fontSize: FontSize.s26,
+                      color: AppColors.textPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: AppSize.s16),
+                  Text(
+                    "Please sign in to continue",
+                    style: getRegularStyle(
+                      fontSize: FontSize.s18,
+                      color: AppColors.textSecondaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: AppSize.s24),
                   CustomTextField(
                     text: "Email",
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter a valid email";
+                        return "Please enter your email";
                       }
                       return null;
                     },
@@ -60,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     isPassword: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Password must be at least 6 characters";
+                        return "Please enter your password";
                       }
                       return null;
                     },
@@ -74,70 +127,63 @@ class _LoginScreenState extends State<LoginScreen> {
                           setState(() {
                             _rememberMe = value ?? false;
                           });
-                          context.read<AuthProvider>().setRememberMe(_rememberMe);
                         },
                       ),
-                      const Text('Remember Me'),
-                    ],
-                  ),
-                  const SizedBox(height: AppSize.s20),
-                  Consumer<AuthProvider>(
-                    builder: (context, auth, _) {
-                      if (auth.error != null) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSize.s16),
-                          child: Text(
-                            auth.error!,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: FontSize.s14,
-                            ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: _handleLogin,
-                    child: const Text("Sign In"),
-                  ),
-                  const SizedBox(height: AppSize.s20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Or Sign In with"),
-                      const SizedBox(width: AppSize.s16),
-                      // IconButton(
-                      //   onPressed: () {},
-                      //   icon: const Icon(
-                      //     FontAwesomeIcons.facebook,
-                      //     color: Colors.blue,
-                      //   ),
-                      // ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          FontAwesomeIcons.google,
-                          color: AppColors.primaryColor,
+                      Text(
+                        "Remember me",
+                        style: getRegularStyle(
+                          fontSize: FontSize.s14,
+                          color: AppColors.textPrimaryColor,
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: AppSize.s24),
+                  Consumer<AuthProvider>(
+                    builder: (context, auth, child) {
+                      return ElevatedButton(
+                        onPressed: auth.state.isLoading ? null : _handleLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppPadding.p12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: auth.state.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                                "Login",
+                                style: getBoldStyle(
+                                  fontSize: FontSize.s16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      );
+                    },
+                  ),
                   const SizedBox(height: AppSize.s20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?"),
+                      Text(
+                        "Don't have an account?",
+                        style: getRegularStyle(
+                          fontSize: FontSize.s14,
+                          color: AppColors.textSecondaryColor,
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/signUp');
                         },
-                        child: const Text(
+                        child: Text(
                           "Sign Up",
-                          style: TextStyle(
+                          style: getBoldStyle(
+                            fontSize: FontSize.s14,
                             color: AppColors.primaryColor,
-                            fontWeight: FontWeightManger.semiBold,
                           ),
                         ),
                       ),
@@ -150,28 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      final authProvider = context.read<AuthProvider>();
-      final success = await authProvider.login(
-        _emailController.text,
-        _passwordController.text,
-      );
-
-      if (success && mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _rememberMe = context.read<AuthProvider>().rememberMe;
-    });
   }
 
   @override
