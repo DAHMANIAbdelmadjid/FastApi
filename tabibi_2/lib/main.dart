@@ -13,18 +13,15 @@ import 'package:tabibi_2/data/data_source/remote_data_source.dart';
 import 'package:tabibi_2/data/network/app_api.dart';
 import 'package:tabibi_2/data/repository/repository_impl.dart';
 import 'package:tabibi_2/generated/l10n.dart';
-import 'package:tabibi_2/secrren/appointment.dart';
 import 'package:tabibi_2/secrren/combined_appointment.dart';
 import 'package:tabibi_2/secrren/auth/login.dart';
 import 'package:tabibi_2/secrren/auth/patient_registration.dart';
 import 'package:tabibi_2/secrren/auth/singup.dart';
-import 'package:tabibi_2/secrren/dar/detailes.dart';
 import 'package:tabibi_2/secrren/dar/payment%20.dart';
 import 'package:tabibi_2/secrren/home.dart';
 import 'package:tabibi_2/secrren/all_doctors.dart';
 import 'package:tabibi_2/secrren/pro_ne/notification.dart';
 import 'package:tabibi_2/secrren/pro_ne/profile.dart';
-import 'package:tabibi_2/secrren/telegram_and_whatsapp.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,7 +94,7 @@ class MyApp extends StatelessWidget {
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            return auth.isAuthenticated ? const HomeScreen() : const CombinedAppointmentScreen(doctorId: 'hghgh'?? 'test-doctor-id');
+            return auth.isAuthenticated ? const HomeScreen() : const HomeScreen();
           },
         ),
         routes: {
@@ -122,7 +119,6 @@ class MyApp extends StatelessWidget {
             return CombinedAppointmentScreen(doctorId: args?['doctorId'] ?? 'test-doctor-id');
           },
           '/all-doctors': (context) => const AllDoctors(),
-          "/detailes": (context) => const Detailes(),
           "/payment": (context) => const Payment(),
           
         },
