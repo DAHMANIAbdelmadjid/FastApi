@@ -2,7 +2,6 @@ import 'package:tabibi_2/data/data_source/remote_data_source.dart';
 import 'package:tabibi_2/data/network/requests.dart';
 import 'package:tabibi_2/data/response/api_response.dart';
 import 'package:tabibi_2/data/response/appointment_response.dart';
-import 'package:tabibi_2/data/response/doctor_response.dart';
 import 'package:tabibi_2/data/response/patient_response.dart';
 import 'package:tabibi_2/data/response/response.dart';
 import 'package:tabibi_2/domain/repository/repository.dart';
