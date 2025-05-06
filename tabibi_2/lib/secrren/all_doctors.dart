@@ -3,7 +3,7 @@ import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
 import 'package:tabibi_2/app/core/styles.dart';
 import 'package:tabibi_2/generated/l10n.dart';
-import 'package:tabibi_2/widgets/card_list_doctor.dart';
+import 'package:tabibi_2/widgets/doctor_card.dart';
 
 class AllDoctors extends StatelessWidget {
   const AllDoctors({super.key});
@@ -71,9 +71,9 @@ class AllDoctors extends StatelessWidget {
                 itemCount: AllDoctors.length,
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(bottom: AppPadding.p8),
-                  child: CardListDoctor(
-                    doctorName: AllDoctors[index],
-                  ),
+                  child: DoctorCard(name: AllDoctors[index], description: '', imageUrl: '', rating: 0, onFavoritePressed: () {  }, onBookPressed: () {  },)
+                
+                  
                 ),
               ),
             ),
