@@ -18,88 +18,92 @@ class CardImageAndProFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        semanticContainer: true,
-        borderOnForeground: true,
-        child: Card(
-            color: AppColors.secondaryColor,
-            child: Padding(
-              padding: const EdgeInsets.all(AppPadding.p12),
+      elevation: 4.0,
+      color: AppColors.secondaryColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppPadding.p16,
+          vertical: AppPadding.p12,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundImage: NetworkImage(
+                      imageUrl ?? 'https://via.placeholder.com/150',
+                    ),
+                  ),
+                  const SizedBox(width: AppSize.s16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(
-                          imageUrl ?? 'https://via.placeholder.com/150',
+                      Text(
+                        S.of(context).welcome,
+                        style: getRegularStyle(
+                          color: AppColors.textSecondaryColor,
+                          fontSize: FontSize.s14,
                         ),
                       ),
-                      const SizedBox(width: AppSize.s10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        patient.fullName,
+                        style: getSemiBoldStyle(
+                          color: AppColors.textPrimaryColor,
+                          fontSize: FontSize.s16,
+                        ),
+                      ),
+                      const SizedBox(height: AppSize.s8),
+                      Row(
                         children: [
+                          Icon(
+                            patient.gender == Gender.male
+                                ? Icons.male
+                                : Icons.female,
+                            size: 16,
+                            color: AppColors.textSecondaryColor,
+                          ),
+                          const SizedBox(width: AppSize.s4),
                           Text(
-                            S.of(context).welcome,
+                            patient.phoneNumber,
                             style: getRegularStyle(
                               color: AppColors.textSecondaryColor,
-                              fontSize: FontSize.s14,
+                              fontSize: FontSize.s12,
                             ),
-                          ),
-                          Text(
-                            patient.fullName,
-                            style: getSemiBoldStyle(
-                              color: AppColors.textPrimaryColor,
-                              fontSize: FontSize.s16,
-                            ),
-                          ),
-                          const SizedBox(height: AppSize.s4),
-                          Row(
-                            children: [
-                              Icon(
-                                patient.gender == Gender.male
-                                    ? Icons.male
-                                    : Icons.female,
-                                size: 16,
-                                color: AppColors.textSecondaryColor,
-                              ),
-                              const SizedBox(width: AppSize.s4),
-                              Text(
-                                patient.phoneNumber,
-                                style: getRegularStyle(
-                                  color: AppColors.textSecondaryColor,
-                                  fontSize: FontSize.s12,
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
                     ],
                   ),
-                  Stack(
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.notifications_none),
-                        color: AppColors.textPrimaryColor,
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          width: AppSize.s10,
-                          height: AppSize.s10,
-                          decoration: const BoxDecoration(
-                            color: AppColors.errorColor,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
-            )));
+            ),
+            Stack(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.notifications_none),
+                  color: AppColors.textPrimaryColor,
+                ),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    width: AppSize.s10,
+                    height: AppSize.s10,
+                    decoration: const BoxDecoration(
+                      color: AppColors.errorColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

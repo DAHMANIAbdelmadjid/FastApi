@@ -77,7 +77,13 @@ class _PatientRegistrationScreenState extends State<PatientRegistrationScreen> {
           ),
         );
       } else {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/home');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Registration successful"),
+            backgroundColor: Colors.green,
+          ),
+        );
       }
     }
   }

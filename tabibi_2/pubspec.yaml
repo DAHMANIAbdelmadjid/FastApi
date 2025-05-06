@@ -47,7 +47,12 @@ flutter:
   assets:
     - assets/icon/
     - assets/wilaya/
-
+    - assets/icon/cardiology.png
+    - assets/icon/pediatrics.png
+    - assets/icon/neurology.png
+    - assets/icon/arthritis.png
+    - assets/icon/tooth.png
+    - assets/icon/skin.png
   fonts:
     - family: OpenSans
       fonts:
