@@ -14,13 +14,12 @@ import 'package:tabibi_2/data/network/app_api.dart';
 import 'package:tabibi_2/data/repository/repository_impl.dart';
 import 'package:tabibi_2/generated/l10n.dart';
 import 'package:tabibi_2/secrren/appointment.dart';
+import 'package:tabibi_2/secrren/combined_appointment.dart';
 import 'package:tabibi_2/secrren/auth/login.dart';
 import 'package:tabibi_2/secrren/auth/patient_registration.dart';
 import 'package:tabibi_2/secrren/auth/singup.dart';
 import 'package:tabibi_2/secrren/dar/detailes.dart';
 import 'package:tabibi_2/secrren/dar/payment%20.dart';
-import 'package:tabibi_2/secrren/dar/select_date_and_time.dart';
-import 'package:tabibi_2/secrren/doctor_profile.dart';
 import 'package:tabibi_2/secrren/home.dart';
 import 'package:tabibi_2/secrren/all_doctors.dart';
 import 'package:tabibi_2/secrren/pro_ne/notification.dart';
@@ -37,6 +36,8 @@ class MyApp extends StatelessWidget {
   final SharedPreferences prefs;
   
   const MyApp({super.key, required this.prefs});
+  
+  get args => null;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,7 @@ class MyApp extends StatelessWidget {
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            return auth.isAuthenticated ? const HomeScreen() : LoginScreen();
+            return auth.isAuthenticated ? const HomeScreen() : const CombinedAppointmentScreen(doctorId: 'hghgh'?? 'test-doctor-id');
           },
         ),
         routes: {
@@ -110,14 +111,17 @@ class MyApp extends StatelessWidget {
             );
           },
           '/home': (context) => const HomeScreen(),
-          '/select-date': (context) => SelectDateAndTime(),
-          '/doctor-profile': (context) => const DoctorProfile(),
+          // '/doctor-profile': (context) {
+          //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+          //   return DoctorProfile(doctorId: args?['doctorId'] ?? 'test-doctor-id');
+          // },
           '/notification': (context) => const NotificationScreen(),
           '/profile': (context) => const ProfileScreen(),
-          '/appointment': (context) => const AppointmentScreen(),
-          '/telegram-and-whatsapp': (context) => const TelegramAndWhatsapp(),
+          '/appointment': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+            return CombinedAppointmentScreen(doctorId: args?['doctorId'] ?? 'test-doctor-id');
+          },
           '/all-doctors': (context) => const AllDoctors(),
-          '/select-date-and-time': (context) => SelectDateAndTime(),
           "/detailes": (context) => const Detailes(),
           "/payment": (context) => const Payment(),
           

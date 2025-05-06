@@ -53,12 +53,18 @@ class PatientProvider extends ChangeNotifier {
       );
 
       final result = await _repository.createPatient(request);
-      print(result);
       if (result.succeeded! && result.data != null) {
-        print(result.data!);
-        
+        // Parse JSON string to Map
+        final Map<String, dynamic> patientData = jsonDecode(result.data!);
+        // Convert response data to Patient model
+        final patient = Patient.fromResponse(patientData);
+        // Update state with new patient data
+        _state = PatientState.success(patient);
+        debugPrint('Patient created successfully: ${patient.id}');
       } else {
-        _state = PatientState.error(result.error ?? 'Failed to create patient');
+        final errorMessage = result.error ?? 'Failed to create patient';
+        debugPrint('Patient creation failed: $errorMessage');
+        _state = PatientState.error(errorMessage);
       }
 
       notifyListeners();

@@ -1,8 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:tabibi_2/app/core/app_colors.dart';
-import 'package:tabibi_2/secrren/doctor_profile.dart';
 import 'package:tabibi_2/secrren/jone.dart';
+import 'package:tabibi_2/secrren/pro_ne/profile.dart';
 import 'package:tabibi_2/secrren/sarch_doctor.dart';
 import 'package:tabibi_2/secrren/telegram_and_whatsapp.dart';
 
@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const JoneScreen(),
     const SearchDoctor(),
     const TelegramAndWhatsapp(),
-    const DoctorProfile(),
+    const ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {
