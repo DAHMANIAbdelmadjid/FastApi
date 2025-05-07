@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
                 body: Center(child: CircularProgressIndicator()),
               );
             }
-            return auth.isAuthenticated ? const HomeScreen() : const AllDoctors();
+            return auth.isAuthenticated ? const HomeScreen() : LoginScreen();
           },
         ),
         routes: {

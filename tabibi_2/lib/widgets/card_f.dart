@@ -17,6 +17,10 @@ class CardImageAndProFile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int i = 0;
+    if (patient.gender == Gender.female) {
+      i = 1;
+    }
     return Card(
       elevation: 4.0,
       color: AppColors.secondaryColor,
@@ -33,9 +37,10 @@ class CardImageAndProFile extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundImage: NetworkImage(
-                      imageUrl ?? 'https://via.placeholder.com/150',
-                    ),
+                    backgroundImage: (imageUrl != null && imageUrl!.isNotEmpty)
+                        ? NetworkImage(imageUrl!)
+                        : AssetImage('assets/icon/profile$i.png')
+                            as ImageProvider,
                   ),
                   const SizedBox(width: AppSize.s16),
                   Column(
@@ -79,27 +84,6 @@ class CardImageAndProFile extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            Stack(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.notifications_none),
-                  color: AppColors.textPrimaryColor,
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: AppSize.s10,
-                    height: AppSize.s10,
-                    decoration: const BoxDecoration(
-                      color: AppColors.errorColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),

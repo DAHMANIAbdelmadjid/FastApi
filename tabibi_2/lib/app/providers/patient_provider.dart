@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:tabibi_2/data/network/requests.dart';
 import 'package:tabibi_2/data/repository/repository_impl.dart';
 import 'package:tabibi_2/domain/models/patient.dart';
@@ -51,13 +50,20 @@ class PatientProvider extends ChangeNotifier {
         email: email,
         userId: userId,
       );
-
       final result = await _repository.createPatient(request);
-      if (result.succeeded! && result.data != null) {
-        // Parse JSON string to Map
-        final Map<String, dynamic> patientData = jsonDecode(result.data!);
-        // Convert response data to Patient model
-        final patient = Patient.fromResponse(patientData);
+      
+      if (result.succeeded == true && result.data != null) {
+        // Create a patient object with the returned ID and request data
+        final patient = Patient(
+          id: result.data!,
+          fullName: fullName,
+          gender: gender,
+          birthDate: birthDate,
+          phoneNumber: phoneNumber,
+          email: email,
+          userId: userId
+        );
+        
         // Update state with new patient data
         _state = PatientState.success(patient);
         debugPrint('Patient created successfully: ${patient.id}');
@@ -66,9 +72,11 @@ class PatientProvider extends ChangeNotifier {
         debugPrint('Patient creation failed: $errorMessage');
         _state = PatientState.error(errorMessage);
       }
+      // Remove redundant logging since we already logged success above
 
       notifyListeners();
     } catch (e) {
+      debugPrint('Error creating patient: ${e.toString()}');
       _state = PatientState.error(e.toString());
       notifyListeners();
     }

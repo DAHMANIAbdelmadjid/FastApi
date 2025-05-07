@@ -8,6 +8,7 @@ import 'package:tabibi_2/app/core/style_constants.dart';
 import 'package:tabibi_2/app/core/styles.dart';
 import 'package:tabibi_2/app/providers/patient_provider.dart';
 import 'package:tabibi_2/domain/models/category.dart';
+import 'package:tabibi_2/domain/models/patient.dart';
 import 'package:tabibi_2/generated/l10n.dart';
 import 'package:tabibi_2/widgets/card_f.dart';
 import 'package:tabibi_2/widgets/card_introdaction.dart';
@@ -211,7 +212,7 @@ class _JoneScreenState extends State<JoneScreen> {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-    
+
     if (errorMessage.isNotEmpty) {
       return Container(
         padding: const EdgeInsets.all(8),
@@ -262,15 +263,11 @@ class _JoneScreenState extends State<JoneScreen> {
                 Consumer<PatientProvider>(
                   builder: (context, patientProvider, _) {
                     final patient = patientProvider.patient;
-                    if (patient == null) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return CardImageAndProFile(patient: patient);
+                    return CardImageAndProFile(patient: patient?? Patient(id: '', fullName: 'Dahmani Abdelmadjid', gender: Gender.male, birthDate:  DateTime(1995, 7, 15), phoneNumber: '0699521216', email: '', userId: ''));
                   },
                 ),
                 const SizedBox(height: AppSize.s24),
                 _buildContent(),
-   
               ],
             ),
           ),

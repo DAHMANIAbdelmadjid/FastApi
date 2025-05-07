@@ -36,8 +36,7 @@ class ProfileScreen extends StatelessWidget {
               Center(
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage:
-                      const AssetImage('assets/images/profile.png'),
+                  backgroundImage: const AssetImage('assets/icon/profile0.png'),
                   backgroundColor: AppColors.secondaryColor,
                 ),
               ),
@@ -76,14 +75,7 @@ class ProfileScreen extends StatelessWidget {
                 },
                 iconColor: Colors.teal.shade200,
               ),
-              _buildMenuItem(
-                icon: Icons.payment,
-                title: 'Payment Method',
-                onTap: () {
-                  // Navigate to payment method screen
-                },
-                iconColor: Colors.teal.shade200,
-              ),
+
               _buildMenuItem(
                 icon: Icons.settings,
                 title: 'Settings',
@@ -92,14 +84,7 @@ class ProfileScreen extends StatelessWidget {
                 },
                 iconColor: Colors.teal.shade200,
               ),
-              _buildMenuItem(
-                icon: Icons.help,
-                title: 'Help',
-                onTap: () {
-                  // Navigate to help screen
-                },
-                iconColor: Colors.teal.shade200,
-              ),
+
               _buildMenuItem(
                 icon: Icons.logout,
                 title: 'Logout',
@@ -112,33 +97,6 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primaryColor,
-        unselectedItemColor: Colors.grey,
-        currentIndex: 3, // Profile tab is selected
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: 'Appointments',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (index) {
-          // Handle navigation
-        },
       ),
     );
   }

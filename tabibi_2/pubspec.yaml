@@ -53,6 +53,9 @@ flutter:
     - assets/icon/arthritis.png
     - assets/icon/tooth.png
     - assets/icon/skin.png
+    - assets/icon/profile0.png
+    - assets/icon/profile1.png
+
   fonts:
     - family: OpenSans
       fonts:
