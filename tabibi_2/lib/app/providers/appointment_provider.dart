@@ -17,9 +17,7 @@ class AppointmentProvider extends ChangeNotifier {
   Future<bool> createAppointment({
     required String workScheduleId,
     required String patientId,
-    required DateTime startTime,
-    required DateTime endTime,
-    String? notes,
+    required int number,
   }) async {
     try {
       _isLoading = true;
@@ -29,9 +27,7 @@ class AppointmentProvider extends ChangeNotifier {
       final request = AppointmentRequest(
         workScheduleId: workScheduleId,
         patientId: patientId,
-        startTime: startTime.toIso8601String(),
-        endTime: endTime.toIso8601String(),
-        notes: notes,
+        number: number,
       );
 
       final response = await _remoteDataSource.createAppointment(request);
@@ -42,6 +38,91 @@ class AppointmentProvider extends ChangeNotifier {
         return true;
       } else {
         _error = response.error ?? 'Failed to create appointment';
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updateAppointment({
+    required String id,
+    required int number,
+    required String workScheduleId,
+  }) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final request = UpdateAppointmentRequest(
+        id: id,
+        number: number,
+        workScheduleId: workScheduleId,
+      );
+
+      final response = await _remoteDataSource.updateAppointment(request);
+      
+      _isLoading = false;
+      if (response.succeeded == true) {
+        notifyListeners();
+        return true;
+      } else {
+        _error = response.error ?? 'Failed to update appointment';
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> confirmAppointment(String id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _remoteDataSource.confirmAppointment(id);
+      
+      _isLoading = false;
+      if (response.succeeded == true) {
+        notifyListeners();
+        return true;
+      } else {
+        _error = response.error ?? 'Failed to confirm appointment';
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> cancelAppointment(String id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _remoteDataSource.cancelAppointment(id);
+      
+      _isLoading = false;
+      if (response.succeeded == true) {
+        notifyListeners();
+        return true;
+      } else {
+        _error = response.error ?? 'Failed to cancel appointment';
         notifyListeners();
         return false;
       }

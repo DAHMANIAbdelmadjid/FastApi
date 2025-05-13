@@ -33,15 +33,22 @@ class Patient {
   });
 
   factory Patient.fromResponse(Map<String, dynamic> json) {
-    return Patient(
-      id: json['id'] as String,
-      fullName: json['fullName'] as String,
-      gender: Gender.fromInt(json['gender'] as int),
-      birthDate: DateTime.parse(json['birthDate'] as String),
-      phoneNumber: json['phoneNumber'] as String,
-      email: json['email'] as String,
-      userId: json['userId'] as String,
-    );
+    try {
+      return Patient(
+        id: json['id']?.toString() ?? '',
+        fullName: json['fullName']?.toString() ?? '',
+        gender: Gender.fromInt(json['gender'] as int? ?? 0),
+        birthDate: json['birthDate'] != null
+          ? DateTime.tryParse(json['birthDate'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+        phoneNumber: json['phoneNumber']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        userId: json['userId']?.toString() ?? json['id']?.toString() ?? '', // Fallback to id if userId is not present
+      );
+    } catch (e) {
+      print('Error parsing patient data: $e');
+      throw FormatException('Failed to parse patient data: $e');
+    }
   }
 
   Map<String, dynamic> toJson() {

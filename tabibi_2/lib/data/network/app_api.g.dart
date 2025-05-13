@@ -58,6 +58,40 @@ class _AppApi implements AppApi {
   }
 
   @override
+  Future<PatientResponse> getPatient(String token) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<PatientResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/patients',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PatientResponse _value;
+    try {
+      _value = PatientResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<LoginResponse> login(
     String email,
     String password,
@@ -150,46 +184,7 @@ class _AppApi implements AppApi {
     )
         .compose(
           _dio.options,
-          '/api/doctors',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late DoctorsResponse _value;
-    try {
-      _value = DoctorsResponse.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<DoctorsResponse> searchDoctors(
-    String query,
-    String city,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'query': query,
-      r'city': city,
-    };
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<DoctorsResponse>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/api/doctors/search',
+          '/api/clinic/doctors',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -219,6 +214,44 @@ class _AppApi implements AppApi {
     _data.addAll(request.toJson());
     final _options = _setStreamType<ApiResponse<String>>(Options(
       method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/appointment',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<String> _value;
+    try {
+      _value = ApiResponse<String>.fromJson(
+        _result.data!,
+        (json) => json as String,
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<String>> updateAppointment(
+      UpdateAppointmentRequest request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<ApiResponse<String>>(Options(
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
@@ -340,6 +373,44 @@ class _AppApi implements AppApi {
         .compose(
           _dio.options,
           '/api/appointment/cancel/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<String> _value;
+    try {
+      _value = ApiResponse<String>.fromJson(
+        _result.data!,
+        (json) => json as String,
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<String>> getWorkSchedule(
+      WorkScheduleRequest request) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<ApiResponse<String>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/work-schedule',
           queryParameters: queryParameters,
           data: _data,
         )

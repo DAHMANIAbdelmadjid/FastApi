@@ -1,104 +1,137 @@
 # Appointment Booking Integration Plan
 
-## Overview
-Integrate the UI components from AppointmentScreen with the functional appointment booking capabilities from SelectDateAndTime to create a unified, polished booking experience.
+## Current System Analysis
 
-## Components Integration
+### API Endpoints
+- POST /api/Appointment - Create appointment
+- PUT /api/Appointment - Update appointment
+- GET /api/Appointment/{workScheduleId} - Get appointments by schedule
+- PATCH /api/Appointment/confirm/{id} - Confirm appointment
+- PATCH /api/Appointment/cancel/{id} - Cancel appointment
 
-### 1. UI Components
-- Doctor information section
-- Appointment details section
-- Payment preview section
-- Enhanced date/time selection
-  - Replace horizontal date picker with TableCalendar
-  - Maintain styled time slot selection
-- Loading and error states
-- Book appointment button
+### WorkSchedule Integration
+- GET /api/work-schedule - Get available schedules
+- POST /api/work-schedule - Create work schedule
 
-### 2. Functional Components
-- AppointmentProvider integration
-- Date and time validation
-- Appointment creation API integration
-- Success/error handling
-- Navigation to payment screen
+## Implementation Plan
 
-## Data Flow
-```mermaid
-graph TD
-    A[Combined Appointment Screen] --> B[Doctor Info Section]
-    A --> C[Details Section]
-    A --> D[Date Selection]
-    A --> E[Time Slot Selection]
-    A --> F[Payment Preview]
-    A --> G[Book Appointment Button]
-    
-    D --> D1[TableCalendar Component]
-    D --> D2[Date Validation]
-    
-    E --> E1[Available Time Slots]
-    E --> E2[Selected Slot Highlight]
-    
-    G --> H[AppointmentProvider]
-    H --> I[Validation]
-    H --> J[API Integration]
-    J --> K[Success - Payment Screen]
-    J --> L[Error Handling]
+### 1. Data Model Updates
+
+Current API expects:
+```json
+{
+  "number": "int",
+  "patientId": "UUID",
+  "workScheduleId": "UUID"
+}
 ```
 
-## Implementation Steps
+Required changes:
+- Update AppointmentRequest class to match API schema
+- Remove startTime/endTime from request
+- Add appointment number generation logic
 
-1. UI Migration
-   - Merge the visual components from AppointmentScreen
-   - Replace date selector with TableCalendar
-   - Maintain existing styling and theme
+### 2. Workflow Improvements
 
-2. State Management
-   - Integrate AppointmentProvider
-   - Add loading states
-   - Implement error handling
+#### User Flow
+1. Select Doctor
+2. Load Work Schedule
+3. Show Available Slots
+4. Select Time Slot
+5. Create Appointment
+6. Show Confirmation
+7. Proceed to Payment
 
-3. Validation & Business Logic
-   - Add date range validation
-   - Implement working hours verification
-   - Add appointment conflict checking
+#### Implementation Details
 
-4. API Integration
-   - Connect appointment creation
-   - Handle API responses
-   - Manage loading states
+a) API Integration Layer
+- Update AppointmentRequest model
+- Add appointment confirmation endpoint
+- Add appointment cancellation endpoint
+- Implement work schedule fetching
+- Add proper error handling
 
-5. Navigation Flow
-   - Success → Payment screen
-   - Error → Show error message
-   - Back → Previous screen
+b) State Management
+- Add WorkScheduleProvider for managing schedules
+- Update AppointmentProvider
+  - Add confirmation handling
+  - Add cancellation handling
+  - Add proper error states
+  - Add loading states
 
-## Technical Considerations
+c) UI Improvements
+- Update appointment booking screen
+  - Load actual available slots from work schedule
+  - Add confirmation dialog
+  - Add cancellation option
+  - Show proper error messages
+  - Display loading states
+- Add appointment confirmation screen
+- Update payment flow integration
 
-### Dependencies
-- table_calendar: For enhanced date selection
-- provider: For state management
-- intl: For date formatting
+### 3. Security & Validation
 
-### State Management
-- Track selected date and time
-- Manage loading states
-- Handle error conditions
-- Store appointment details
+#### Authentication
+- Ensure proper auth token handling
+- Add proper patient ID retrieval from auth context
 
-### Validation Rules
-- Date must be within allowed range
-- Time slot must be available
-- Required fields must be filled
-- No conflicting appointments
+#### Validation
+- Add input validation
+- Add appointment conflict checking
+- Add proper error handling and user feedback
 
-### Error Handling
+### 4. Error Handling
+
+#### Types of Errors
 - Network errors
 - Validation errors
-- Server errors
 - Conflict errors
+- Server errors
 
-## Future Enhancements
-- Real-time slot availability
-- Appointment reminders
-- Cancellation flow
-- Rescheduling capabilities
+#### Error Handling Strategy
+- Show user-friendly error messages
+- Provide retry options where applicable
+- Log errors for debugging
+- Handle edge cases gracefully
+
+## Implementation Phases
+
+### Phase 1: Core Functionality
+- Update data models
+- Implement basic appointment creation flow
+- Add work schedule integration
+
+### Phase 2: Enhanced Features
+- Add confirmation/cancellation
+- Improve error handling
+- Add validation
+
+### Phase 3: UI/UX Improvements
+- Add loading states
+- Improve error messages
+- Add confirmation dialogs
+- Enhance visual feedback
+
+## Testing Strategy
+
+### Unit Tests
+- Test appointment creation
+- Test validation logic
+- Test error handling
+
+### Integration Tests
+- Test API integration
+- Test workflow steps
+- Test state management
+
+### UI Tests
+- Test user flows
+- Test error states
+- Test loading states
+
+## Notes
+
+- Keep API endpoint documentation updated
+- Follow existing code style and patterns
+- Maintain proper error logging
+- Document all new features and changes

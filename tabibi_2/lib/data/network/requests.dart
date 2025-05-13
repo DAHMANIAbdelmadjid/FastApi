@@ -13,27 +13,41 @@ class LoginRequest {
 }
 
 class AppointmentRequest {
-  final String workScheduleId;
+  final int number;
   final String patientId;
-  final String startTime;
-  final String endTime;
-  final String? notes;
+  final String workScheduleId;
 
   AppointmentRequest({
-    required this.workScheduleId,
+    required this.number,
     required this.patientId,
-    required this.startTime,
-    required this.endTime,
-    this.notes,
+    required this.workScheduleId,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'workScheduleId': workScheduleId,
+      'number': number,
       'patientId': patientId,
-      'startTime': startTime,
-      'endTime': endTime,
-      if (notes != null) 'notes': notes,
+      'workScheduleId': workScheduleId,
+    };
+  }
+}
+
+class UpdateAppointmentRequest {
+  final String id;
+  final int number;
+  final String workScheduleId;
+
+  UpdateAppointmentRequest({
+    required this.id,
+    required this.number,
+    required this.workScheduleId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'number': number,
+      'workScheduleId': workScheduleId,
     };
   }
 }

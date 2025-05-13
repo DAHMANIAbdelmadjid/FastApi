@@ -7,6 +7,9 @@ class AppointmentResponse {
   @JsonKey(name: 'id')
   String? id;
 
+  @JsonKey(name: 'number')
+  int? number;
+
   @JsonKey(name: 'workScheduleId')
   String? workScheduleId;
 
@@ -27,6 +30,7 @@ class AppointmentResponse {
 
   AppointmentResponse({
     this.id,
+    this.number,
     this.workScheduleId,
     this.patientId,
     this.startTime,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:tabibi_2/data/data_source/remote_data_source.dart';
 import 'package:tabibi_2/data/network/requests.dart';
 import 'package:tabibi_2/data/response/api_response.dart';
@@ -15,23 +17,20 @@ class RepositoryImpl implements Repository {
   Future<LoginResponse> login(String email, String password) async {
     return await _remoteDataSource.login(email, password);
   }
+// في RepositoryImpl
+@override
+Future<PatientResponse> getPatient(String token) {
+  return _remoteDataSource.getPatient(token);
+}
 
   @override
   Future<LoginResponse> signup(String fullName, String email, String password) async {
     return await _remoteDataSource.signup(fullName, email, password);
   }
-
-
   @override
   Future<DoctorsResponse> getDoctors() async {
     return await _remoteDataSource.getDoctors();
   }
-
-  @override
-  Future<DoctorsResponse> searchDoctors(String query, String city) async {
-    return await _remoteDataSource.searchDoctors(query, city);
-  }
-
   @override
   Future<ApiResponse<String>> createAppointment(AppointmentRequest request) async {
     return await _remoteDataSource.createAppointment(request);

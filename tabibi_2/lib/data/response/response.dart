@@ -5,16 +5,11 @@ part 'response.g.dart';
 
 @JsonSerializable()
 class LoginResponse {
-  @JsonKey(name: 'statusCode')
-  int? statusCode;
-  @JsonKey(name: 'succeeded')
-  bool? succeeded;
-  @JsonKey(name: 'message')
-  String? message;
-  @JsonKey(name: 'error')
-  String? error;
-  @JsonKey(name: 'data')
-  String? data;
+  final int? statusCode;
+  final bool? succeeded;
+  final String? message;
+  final String? error;
+  final String? data;
 
   LoginResponse({
     this.statusCode,
@@ -24,39 +19,88 @@ class LoginResponse {
     this.data,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
-
-  String? get token => data;
 }
 
 @JsonSerializable()
 class LoginData {
-  @JsonKey(name: 'token')
-  String? token;
-  @JsonKey(name: 'userId')
-  String? userId;
+  final String? userId;
+  final String? token;
+  final String? id;
+  final String? email;
+  final String? fullName;
+  final bool? isPatient;
 
   LoginData({
-    this.token,
     this.userId,
+    this.token,
+    this.id,
+    this.email,
+    this.fullName,
+    this.isPatient,
   });
 
-  factory LoginData.fromJson(Map<String, dynamic> json) =>
-      _$LoginDataFromJson(json);
+  factory LoginData.fromJson(Map<String, dynamic> json) => _$LoginDataFromJson(json);
   Map<String, dynamic> toJson() => _$LoginDataToJson(this);
 }
 
+@JsonSerializable()
+class DoctorResponse {
+  @JsonKey(name: 'id')
+  final String? id;
+  @JsonKey(name: 'name')
+  final String? name;
+  @JsonKey(name: 'specialty')
+  final String? specialty;
+  @JsonKey(name: 'city')
+  final String? city;
+  @JsonKey(name: 'address')
+  final String? address;
+  @JsonKey(name: 'description')
+  final String? description;
+  @JsonKey(name: 'imageUrl')
+  final String? imageUrl;
+  @JsonKey(name: 'rating')
+  final num? rating;
+  @JsonKey(name: 'reviewCount')
+  final int? reviewCount;
 
+  DoctorResponse({
+    this.id,
+    this.name,
+    this.specialty,
+    this.city,
+    this.address,
+    this.description,
+    this.imageUrl,
+    this.rating,
+    this.reviewCount,
+  });
 
+  factory DoctorResponse.fromJson(Map<String, dynamic> json) => _$DoctorResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$DoctorResponseToJson(this);
 
+  Doctor toDomain() => Doctor(
+        id: id ?? '',
+        name: name ?? '',
+        specialty: specialty ?? '',
+        city: city ?? '',
+        address: address ?? '',
+        description: description ?? '',
+        imageUrl: imageUrl ?? '',
+        rating: (rating ?? 0.0).toDouble(),
+        reviewCount: reviewCount ?? 0,
+      );
+}
+
+@JsonSerializable()
 class DoctorsResponse {
-  int? statusCode;
-  bool? succeeded;
-  String? message;
-  String? error;
-  List<DoctorResponse>? data;
+  final int? statusCode;
+  final bool? succeeded;
+  final String? message;
+  final String? error;
+  final List<DoctorResponse>? data;
 
   DoctorsResponse({
     this.statusCode,
@@ -66,70 +110,8 @@ class DoctorsResponse {
     this.data,
   });
 
-  factory DoctorsResponse.fromJson(Map<String, dynamic> json) => DoctorsResponse(
-        statusCode: json["statusCode"],
-        succeeded: json["succeeded"],
-        message: json["message"],
-        error: json["error"],
-        data: json["data"] == null
-            ? []
-            : List<DoctorResponse>.from(
-                json["data"].map((x) => DoctorResponse.fromJson(x))),
-      );
+  factory DoctorsResponse.fromJson(Map<String, dynamic> json) => _$DoctorsResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$DoctorsResponseToJson(this);
 
-  Map<String, dynamic> toJson() => {
-        "statusCode": statusCode,
-        "succeeded": succeeded,
-        "message": message,
-        "error": error,
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
-      };
-}
-
-class DoctorResponse {
-  int? id;
-  String? name;
-  String? specialty;
-  String? imageUrl;
-  String? city;
-  double? rating;
-
-  DoctorResponse({
-    this.id,
-    this.name,
-    this.specialty,
-    this.imageUrl,
-    this.city,
-    this.rating,
-  });
-
-  factory DoctorResponse.fromJson(Map<String, dynamic> json) => DoctorResponse(
-        id: json["id"],
-        name: json["name"],
-        specialty: json["specialty"],
-        imageUrl: json["imageUrl"],
-        city: json["city"],
-        rating: json["rating"]?.toDouble(),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "specialty": specialty,
-        "imageUrl": imageUrl,
-        "city": city,
-        "rating": rating,
-      };
-
-  toDomain() => Doctor(
-        id: id ?? 0,
-        name: name ?? '',
-        specialty: specialty ?? '',
-        imageUrl: imageUrl ?? '',
-        city: city ?? '',
-        rating: rating ?? 0.0,
-        address: '', // Provide a default or appropriate value for 'address'
-      );
+  List<Doctor> toDomain() => data?.map((d) => d.toDomain()).toList() ?? [];
 }

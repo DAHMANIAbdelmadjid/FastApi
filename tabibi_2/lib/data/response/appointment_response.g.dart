@@ -9,6 +9,7 @@ part of 'appointment_response.dart';
 AppointmentResponse _$AppointmentResponseFromJson(Map<String, dynamic> json) =>
     AppointmentResponse(
       id: json['id'] as String?,
+      number: (json['number'] as num?)?.toInt(),
       workScheduleId: json['workScheduleId'] as String?,
       patientId: json['patientId'] as String?,
       startTime: json['startTime'] as String?,
@@ -21,6 +22,7 @@ Map<String, dynamic> _$AppointmentResponseToJson(
         AppointmentResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'number': instance.number,
       'workScheduleId': instance.workScheduleId,
       'patientId': instance.patientId,
       'startTime': instance.startTime,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tabibi_2/app/core/app_colors.dart';
 import 'package:tabibi_2/app/core/style_constants.dart';
@@ -64,11 +65,24 @@ class _JoneScreenState extends State<JoneScreen> {
   final List<Category> categories = Category.getMedicalCategories();
 
   int selectedIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-    loadCitiesData();
-  }
+ @override
+void initState() {
+  super.initState();
+  loadCitiesData();
+
+  // استدعاء جلب معلومات المريض
+ Future.microtask(() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if (token != null) {
+      print("Token found: $token");
+      // استدعاء جلب معلومات المريض
+      // تأكد من أن لديك PatientProvider في شجرة الويدجت
+      Provider.of<PatientProvider>(context, listen: false).fetchPatient(token);
+    }
+  });
+}
+
 
   Future<void> loadCitiesData() async {
     try {
@@ -239,7 +253,15 @@ class _JoneScreenState extends State<JoneScreen> {
         const SizedBox(height: AppSize.s24),
         ElevatedButton(
           onPressed: (selectedState != null && selectedMunicipality != null)
-              ? () => Navigator.pushNamed(context, '/search-doctor')
+              ? () {
+                  print('Selected State: $selectedState');
+                  print('Selected Municipality: $selectedMunicipality');
+                  Navigator.pushNamed(context, '/all-doctors', arguments: {
+                    'city': selectedMunicipality,
+                    'state': selectedState,
+                    'municipality': selectedMunicipality,
+                  });
+                }
               : null,
           child: Text(S.of(context).searchDoctor),
         ),
@@ -263,7 +285,17 @@ class _JoneScreenState extends State<JoneScreen> {
                 Consumer<PatientProvider>(
                   builder: (context, patientProvider, _) {
                     final patient = patientProvider.patient;
-                    return CardImageAndProFile(patient: patient?? Patient(id: '', fullName: 'Dahmani Abdelmadjid', gender: Gender.male, birthDate:  DateTime(1995, 7, 15), phoneNumber: '0699521216', email: '', userId: ''));
+                    print(patient);
+                    return CardImageAndProFile(
+                        patient: patient ??
+                            Patient(
+                                id: '',
+                                fullName: 'Dahmani Abdelmadjid',
+                                gender: Gender.male,
+                                birthDate: DateTime(1995, 7, 15),
+                                phoneNumber: '0699521216',
+                                email: '',
+                                userId: ''));
                   },
                 ),
                 const SizedBox(height: AppSize.s24),

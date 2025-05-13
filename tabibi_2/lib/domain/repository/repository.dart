@@ -14,13 +14,12 @@ abstract class Repository {
   
 
   Future<DoctorsResponse> getDoctors();
-  Future<DoctorsResponse> searchDoctors(String query, String city);
   
   // Appointments
   Future<ApiResponse<String>> createAppointment(AppointmentRequest request);
   Future<ApiResponse<List<AppointmentResponse>>> getAppointments(String workScheduleId);
   Future<ApiResponse<void>> confirmAppointment(String id);
   Future<ApiResponse<void>> cancelAppointment(String id);
-  
+Future<PatientResponse> getPatient(String token);
  
 }

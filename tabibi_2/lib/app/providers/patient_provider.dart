@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tabibi_2/data/network/requests.dart';
 import 'package:tabibi_2/data/repository/repository_impl.dart';
+import 'package:tabibi_2/data/response/patient_response.dart';
 import 'package:tabibi_2/domain/models/patient.dart';
 import 'package:intl/intl.dart';
 
@@ -25,11 +27,79 @@ class PatientState {
 class PatientProvider extends ChangeNotifier {
   final RepositoryImpl _repository;
   PatientState _state = PatientState.initial();
+  String? _authToken;
 
   PatientProvider(this._repository);
 
+  String? get authToken => _authToken;
+  
+  set authToken(String? value) {
+    _authToken = value;
+    notifyListeners();
+  }
+
   PatientState get state => _state;
 
+Future<void> fetchPatient(String token) async {
+  // print("fetchPatient called with token: $token");
+  try {
+    _authToken = token;
+    _state = PatientState.loading();
+    notifyListeners();
+    
+    print("Making repository call");
+    final result = await _repository.getPatient(token);
+    
+    if (result.succeeded == true && result.data != null) {
+      print("API call successful, parsing data");
+      
+      // The issue is here. Check what type result.data is
+      print("Result data type: ${result.data.runtimeType}");
+      
+      // If result.data is already a Map/JSON object, no need to decode it
+      final Map<String, dynamic> jsonData;
+      if (result.data is PatientData) {
+        final patientData = result.data as PatientData;
+        // Check if patientData is null or essential fields are missing
+        if (patientData == null) {
+          throw Exception('Patient data is null');
+        }
+        
+        // Create jsonData with explicit null checks and include userId
+        jsonData = {
+          'id': patientData.id ?? '',
+          'fullName': patientData.fullName ?? '',
+          'gender': patientData.gender ?? 0,
+          'birthDate': patientData.birthDate ?? DateTime.now().toIso8601String(),
+          'phoneNumber': patientData.phoneNumber ?? '',
+          'email': patientData.email ?? '',
+          'state': patientData.state ?? '',
+          'city': patientData.city ?? '',
+          'userId': patientData.id ?? '', // Use id as userId if not provided
+        };
+
+        // Validate essential fields
+        if (jsonData['id'] == '' || jsonData['fullName'] == '') {
+          throw Exception('Essential patient data is missing');
+        }
+      } else {
+        throw Exception('Invalid patient data format');
+      }
+      
+      final patient = Patient.fromResponse(jsonData);
+      _state = PatientState.success(patient);
+      print("Patient loaded: ${patient.fullName}");
+    } else {
+      print("API call failed: ${result.error}");
+      _state = PatientState.error(result.error ?? "فشل في استرجاع معلومات المريض");
+    }
+    notifyListeners();
+  } catch (e) {
+    print("Exception in fetchPatient: $e");
+    _state = PatientState.error(e.toString());
+    notifyListeners();
+  }
+}
   Future<void> createPatient({
     required String fullName,
     required Gender gender,
@@ -63,6 +133,7 @@ class PatientProvider extends ChangeNotifier {
           email: email,
           userId: userId
         );
+        
         
         // Update state with new patient data
         _state = PatientState.success(patient);

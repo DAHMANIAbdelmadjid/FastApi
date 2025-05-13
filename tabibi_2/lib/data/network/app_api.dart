@@ -17,6 +17,12 @@ abstract class AppApi {
   Future<PatientResponse> createPatient(
     @Body() PatientRequest request,
   );
+@GET("/api/patients")
+Future<PatientResponse> getPatient(
+  @Header("Authorization") String token,
+);
+
+
 
   @POST("/api/authenfication/signin")
   Future<LoginResponse> login(
@@ -31,16 +37,18 @@ abstract class AppApi {
     @Field("password") String password,
   );
 
-  @GET("/api/doctors")
+  @GET("/api/clinic/doctors")
   Future<DoctorsResponse> getDoctors();
 
-  @GET("/api/doctors/search")
-  Future<DoctorsResponse> searchDoctors(
-      @Query("query") String query, @Query("city") String city);
 
   @POST("/api/appointment")
   Future<ApiResponse<String>> createAppointment(
     @Body() AppointmentRequest request,
+  );
+
+  @PUT("/api/appointment")
+  Future<ApiResponse<String>> updateAppointment(
+    @Body() UpdateAppointmentRequest request,
   );
 
   @GET("/api/appointment/{workScheduleId}")
@@ -54,5 +62,8 @@ abstract class AppApi {
   @PATCH("/api/appointment/cancel/{id}")
   Future<ApiResponse<String>> cancelAppointment(@Path() String id);
 
-  
+  @GET("/api/work-schedule")
+  Future<ApiResponse<String>> getWorkSchedule(
+    @Body() WorkScheduleRequest request,
+  );
 }

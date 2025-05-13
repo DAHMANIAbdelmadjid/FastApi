@@ -10,12 +10,25 @@ abstract class RemoteDataSource {
   Future<LoginResponse> signup(String fullName, String email, String password);
 
   Future<DoctorsResponse> getDoctors();
-  Future<DoctorsResponse> searchDoctors(String query, String city);
+
+  // Appointment methods
   Future<ApiResponse<String>> createAppointment(AppointmentRequest request);
-  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(String workScheduleId);
+  Future<ApiResponse<String>> updateAppointment(
+      UpdateAppointmentRequest request);
+  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(
+      String workScheduleId);
   Future<ApiResponse<void>> confirmAppointment(String id);
   Future<ApiResponse<void>> cancelAppointment(String id);
+
+  // Work Schedule methods
+  Future<ApiResponse<String>> getWorkSchedule(WorkScheduleRequest request);
+
   Future<PatientResponse> createPatient(PatientRequest request);
+
+  Future<PatientResponse> getPatient(String token);
+
+
+  
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -29,10 +42,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<LoginResponse> signup(String fullName, String email, String password) async {
+  Future<LoginResponse> signup(
+      String fullName, String email, String password) async {
     return await _appApi.signup(fullName, email, password);
   }
-
 
   @override
   Future<DoctorsResponse> getDoctors() async {
@@ -40,17 +53,20 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<DoctorsResponse> searchDoctors(String query, String city) async {
-    return await _appApi.searchDoctors(query, city);
-  }
-
-  @override
-  Future<ApiResponse<String>> createAppointment(AppointmentRequest request) async {
+  Future<ApiResponse<String>> createAppointment(
+      AppointmentRequest request) async {
     return await _appApi.createAppointment(request);
   }
 
   @override
-  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(String workScheduleId) async {
+  Future<ApiResponse<String>> updateAppointment(
+      UpdateAppointmentRequest request) async {
+    return await _appApi.updateAppointment(request);
+  }
+
+  @override
+  Future<ApiResponse<List<AppointmentResponse>>> getAppointments(
+      String workScheduleId) async {
     return await _appApi.getAppointments(workScheduleId);
   }
 
@@ -64,10 +80,19 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return await _appApi.cancelAppointment(id);
   }
 
-
+  @override
+  Future<ApiResponse<String>> getWorkSchedule(
+      WorkScheduleRequest request) async {
+    return await _appApi.getWorkSchedule(request);
+  }
 
   @override
   Future<PatientResponse> createPatient(PatientRequest request) async {
     return await _appApi.createPatient(request);
   }
+
+@override
+Future<PatientResponse> getPatient(String token) {
+  return _appApi.getPatient("Bearer $token");
+}
 }
