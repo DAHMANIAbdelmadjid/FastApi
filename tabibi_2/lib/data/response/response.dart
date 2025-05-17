@@ -47,50 +47,47 @@ class LoginData {
 
 @JsonSerializable()
 class DoctorResponse {
-  @JsonKey(name: 'id')
   final String? id;
-  @JsonKey(name: 'name')
-  final String? name;
-  @JsonKey(name: 'specialty')
-  final String? specialty;
-  @JsonKey(name: 'city')
-  final String? city;
-  @JsonKey(name: 'address')
-  final String? address;
-  @JsonKey(name: 'description')
-  final String? description;
-  @JsonKey(name: 'imageUrl')
-  final String? imageUrl;
-  @JsonKey(name: 'rating')
-  final num? rating;
-  @JsonKey(name: 'reviewCount')
-  final int? reviewCount;
+  final String? firstName;
+  final String? middelName;
+  final String? lastName;
+  final int? gender;
+  final String? dateOfBirth;
+  final String? phoneNumber;
+  final String? emailAddress;
+  final String? photoUrl;
+  final String? notes;
+  final String? clinicId;
 
   DoctorResponse({
     this.id,
-    this.name,
-    this.specialty,
-    this.city,
-    this.address,
-    this.description,
-    this.imageUrl,
-    this.rating,
-    this.reviewCount,
+    this.firstName,
+    this.middelName,
+    this.lastName,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
+    this.emailAddress,
+    this.photoUrl,
+    this.notes,
+    this.clinicId,
   });
 
   factory DoctorResponse.fromJson(Map<String, dynamic> json) => _$DoctorResponseFromJson(json);
   Map<String, dynamic> toJson() => _$DoctorResponseToJson(this);
 
   Doctor toDomain() => Doctor(
-        id: id ?? '',
-        name: name ?? '',
-        specialty: specialty ?? '',
-        city: city ?? '',
-        address: address ?? '',
-        description: description ?? '',
-        imageUrl: imageUrl ?? '',
-        rating: (rating ?? 0.0).toDouble(),
-        reviewCount: reviewCount ?? 0,
+        id: id ?? "",
+        firstName: firstName ?? "",
+        middelName: middelName ?? "",
+        lastName: lastName ?? "",
+        gender: gender ?? 1,
+        dateOfBirth: dateOfBirth != null ? DateTime.parse(dateOfBirth!) : DateTime(1970),
+        phoneNumber: phoneNumber ?? "",
+        emailAddress: emailAddress ?? "",
+        photoUrl: photoUrl,
+        notes: notes ?? "",
+        clinicId: clinicId ?? "",
       );
 }
 

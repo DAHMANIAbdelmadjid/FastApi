@@ -45,27 +45,31 @@ Map<String, dynamic> _$LoginDataToJson(LoginData instance) => <String, dynamic>{
 DoctorResponse _$DoctorResponseFromJson(Map<String, dynamic> json) =>
     DoctorResponse(
       id: json['id'] as String?,
-      name: json['name'] as String?,
-      specialty: json['specialty'] as String?,
-      city: json['city'] as String?,
-      address: json['address'] as String?,
-      description: json['description'] as String?,
-      imageUrl: json['imageUrl'] as String?,
-      rating: json['rating'] as num?,
-      reviewCount: (json['reviewCount'] as num?)?.toInt(),
+      firstName: json['firstName'] as String?,
+      middelName: json['middelName'] as String?,
+      lastName: json['lastName'] as String?,
+      gender: (json['gender'] as num?)?.toInt(),
+      dateOfBirth: json['dateOfBirth'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      emailAddress: json['emailAddress'] as String?,
+      photoUrl: json['photoUrl'] as String?,
+      notes: json['notes'] as String?,
+      clinicId: json['clinicId'] as String?,
     );
 
 Map<String, dynamic> _$DoctorResponseToJson(DoctorResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
-      'specialty': instance.specialty,
-      'city': instance.city,
-      'address': instance.address,
-      'description': instance.description,
-      'imageUrl': instance.imageUrl,
-      'rating': instance.rating,
-      'reviewCount': instance.reviewCount,
+      'firstName': instance.firstName,
+      'middelName': instance.middelName,
+      'lastName': instance.lastName,
+      'gender': instance.gender,
+      'dateOfBirth': instance.dateOfBirth,
+      'phoneNumber': instance.phoneNumber,
+      'emailAddress': instance.emailAddress,
+      'photoUrl': instance.photoUrl,
+      'notes': instance.notes,
+      'clinicId': instance.clinicId,
     };
 
 DoctorsResponse _$DoctorsResponseFromJson(Map<String, dynamic> json) =>

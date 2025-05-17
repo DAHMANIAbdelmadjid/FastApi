@@ -1,51 +1,61 @@
 class Doctor {
   final String id;
-  final String name;
-  final String specialty;
-  final String city;
-  final String address;
-  final String description;
-  final String imageUrl;
-  final double rating;
-  final int reviewCount;
+  final String firstName;
+  final String middelName;
+  final String lastName;
+  final int gender;
+  final DateTime dateOfBirth;
+  final String phoneNumber;
+  final String emailAddress;
+  final String? photoUrl;
+  final String notes;
+  final String clinicId;
 
   Doctor({
     required this.id,
-    required this.name,
-    required this.specialty,
-    required this.city,
-    required this.address,
-    required this.description,
-    required this.imageUrl,
-    required this.rating,
-    required this.reviewCount,
+    required this.firstName,
+    required this.middelName,
+    required this.lastName,
+    required this.gender,
+    required this.dateOfBirth,
+    required this.phoneNumber,
+    required this.emailAddress,
+    this.photoUrl,
+    required this.notes,
+    required this.clinicId,
   });
+
+  String get fullName => "$firstName $middelName $lastName".trim();
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-      id: json['id'].toString(),
-      name: json['name'] as String,
-      specialty: json['specialty'] as String,
-      city: json['city'] as String,
-      address: json['address'] as String,
-      description: json['description'] as String,
-      imageUrl: json['imageUrl'] as String,
-      rating: (json['rating'] as num).toDouble(),
-      reviewCount: json['reviewCount'] as int,
+      id: json['id'] as String,
+      firstName: json['firstName'] as String,
+      middelName: json['middelName'] as String,
+      lastName: json['lastName'] as String,
+      gender: json['gender'] as int,
+      dateOfBirth: DateTime.parse(json['dateOfBirth'] as String),
+      phoneNumber: json['phoneNumber'] as String,
+      emailAddress: json['emailAddress'] as String,
+      photoUrl: json['photoUrl'] as String?,
+      notes: json['notes'] as String,
+      clinicId: json['clinicId'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'specialty': specialty,
-      'city': city,
-      'address': address,
-      'description': description,
-      'imageUrl': imageUrl,
-      'rating': rating,
-      'reviewCount': reviewCount,
+      'firstName': firstName,
+      'middelName': middelName,
+      'lastName': lastName,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth.toIso8601String(),
+      'phoneNumber': phoneNumber,
+      'emailAddress': emailAddress,
+      'photoUrl': photoUrl,
+      'notes': notes,
+      'clinicId': clinicId,
     };
   }
 }

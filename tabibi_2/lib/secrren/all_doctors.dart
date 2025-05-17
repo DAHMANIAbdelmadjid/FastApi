@@ -184,10 +184,10 @@ class _AllDoctorsState extends State<AllDoctors> {
                     itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.only(bottom: AppPadding.p8),
                       child: DoctorCard(
-                        name: doctors[index].name,
-                        description: doctors[index].description,
-                        imageUrl: doctors[index].imageUrl,
-                        rating: doctors[index].rating,
+                        name: doctors[index].fullName,
+                        description: doctors[index].notes,
+                        imageUrl: doctors[index].photoUrl ?? "",
+                        rating: 0.0, // Default rating since it's not in our API response
                         onFavoritePressed: () {
                           // TODO: Implement favorite functionality
                         },
